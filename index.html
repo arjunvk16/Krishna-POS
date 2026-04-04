@@ -3,132 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krishna Hotel - Billing System</title>
+    <title>Krishna Hotel - Modern POS</title>
     <!-- html2pdf library for downloading the bill -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Modern Dark Theme Variables */
+        /* Premium Dark Theme Variables */
         :root {
-            --primary: #ea580c; /* Deep orange/saffron */
-            --primary-hover: #c2410c;
-            --bg-color: #121212; /* Black theme background */
-            --card-bg: #1e1e1e; /* Dark card background */
-            --text-main: #f8fafc; /* Light text for dark mode */
+            --primary: #f97316; /* Vibrant Saffron/Orange */
+            --primary-hover: #ea580c;
+            --bg-color: #0f172a; /* Deep Slate Background */
+            --surface: #1e293b; /* Card Background */
+            --surface-hover: #334155;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.3);
-            --radius: 12px;
+            --accent: #10b981; /* Green for success/totals */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.15);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            padding-bottom: 140px; /* Space for the sticky bottom bar */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Header Section */
-        header {
-            background: var(--card-bg);
+        /* App Layout */
+        .app-container {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
             padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            gap: 24px;
+        }
+
+        /* Left Side: Main Menu */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--surface), rgba(30, 41, 59, 0.5));
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: rgba(249, 115, 22, 0.2);
+            padding: 10px;
+            border-radius: 12px;
         }
 
         header h1 {
             color: var(--primary);
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
             letter-spacing: 1px;
-            margin-bottom: 4px;
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Main Container & Grid */
-        .container {
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 0 15px;
         }
 
         .menu-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            padding-bottom: 100px; /* Space for mobile footer */
         }
 
-        /* Menu Item Card */
+        /* Modern Menu Item Card */
         .menu-item {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 16px 20px;
-            box-shadow: var(--shadow-sm);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 20px;
             border: 1px solid var(--border-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s, box-shadow 0.2s;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .menu-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            border-color: #475569;
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
+            background: var(--surface-hover);
         }
 
-        .item-info {
+        .item-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-emoji {
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+        }
+
+        .item-details {
             flex: 1;
         }
 
         .item-name {
-            font-size: 1.15rem;
-            font-weight: 600;
+            font-size: 1.25rem;
+            font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .item-price {
             color: var(--primary);
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-weight: 800;
+            font-size: 1.2rem;
         }
 
-        /* Modern Quantity Controls */
+        /* Improved Quantity Controls */
         .quantity-controls {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             background: var(--bg-color);
+            border-radius: var(--radius-md);
+            padding: 6px;
             border: 1px solid var(--border-color);
-            border-radius: 50px;
-            padding: 4px;
         }
 
         .qty-btn {
-            background: var(--card-bg);
+            background: var(--surface);
             color: var(--text-main);
-            border: 1px solid var(--border-color);
-            width: 44px; /* Larger for mobile touch */
-            height: 44px; /* Larger for mobile touch */
-            border-radius: 50%;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
@@ -136,144 +173,250 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            /* Prevent double tap zoom on mobile */
-            touch-action: manipulation; 
+            touch-action: manipulation;
         }
 
         .qty-btn:hover {
             background: var(--primary);
             color: white;
-            border-color: var(--primary);
         }
 
         .qty-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.9);
         }
 
-        input[type="number"] {
-            width: 50px;
+        /* Made input explicitly editable and prominent */
+        .qty-input {
+            width: 70px;
+            height: 40px;
             text-align: center;
-            font-size: 1.2rem; /* 16px+ prevents iOS auto-zoom */
-            font-weight: 600;
-            border: none;
-            background: transparent;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid transparent;
             color: var(--text-main);
+            border-radius: 8px;
             outline: none;
-            -moz-appearance: textfield;
+            transition: all 0.2s;
+            cursor: text;
         }
 
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
+        .qty-input:hover {
+            background: rgba(0,0,0,0.5);
+        }
+
+        .qty-input:focus {
+            border-color: var(--primary);
+            background: rgba(0,0,0,0.6);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+
+        .qty-input::-webkit-inner-spin-button, 
+        .qty-input::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
             margin: 0; 
         }
 
-        /* Sticky Bottom Checkout Bar */
-        .checkout-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(30, 30, 30, 0.95); /* Dark blur */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color);
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-            padding: 15px 20px;
-            z-index: 100;
+        /* Right Side: Order Summary (Sidebar for Desktop) */
+        .sidebar {
+            width: 380px;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow: hidden;
         }
 
-        .checkout-content {
-            max-width: 1000px;
-            margin: 0 auto;
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cart-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
         }
 
-        .total-wrapper {
+        .cart-item-name {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .cart-item-qty {
+            color: var(--primary);
+            font-weight: 700;
+            margin-left: 8px;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-total {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-style: italic;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .total-row {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
 
         .total-label {
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             color: var(--text-muted);
-            text-transform: uppercase;
             font-weight: 600;
-            letter-spacing: 1px;
         }
 
         .total-amount {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
-            color: var(--text-main);
+            color: var(--accent);
         }
 
         .download-btn {
+            width: 100%;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            border-radius: 50px;
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-            box-shadow: var(--shadow-md);
-            touch-action: manipulation;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
         }
 
         .download-btn:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
         }
 
-        .download-btn:active {
-            transform: translateY(0);
+        /* NEW: Search Bar & Reset Button Styles */
+        .search-box {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        
+        .search-box:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
         }
 
-        /* Responsive Adjustments for Mobile */
-        @media (max-width: 600px) {
-            .menu-grid {
-                grid-template-columns: 1fr; /* Single column on phones */
-            }
-            .checkout-content {
+        .action-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .reset-btn {
+            background: transparent;
+            color: #ef4444; /* Destructive red */
+            border: 1px solid #ef4444;
+            padding: 12px 16px;
+            font-size: 1.2rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Sticky Footer (Hidden on Desktop) */
+        .mobile-footer {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+            z-index: 100;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .app-container {
                 flex-direction: column;
-                text-align: stretch;
-                gap: 12px;
-            }
-            .total-wrapper {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0 10px;
-            }
-            .total-amount {
-                font-size: 1.6rem;
-            }
-            .download-btn {
-                width: 100%;
-                justify-content: center;
-                padding: 14px;
-            }
-            header {
                 padding: 15px;
             }
-            header h1 {
-                font-size: 1.5rem;
+            .sidebar {
+                display: none; /* Hide full sidebar on mobile */
+            }
+            .mobile-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .menu-grid {
+                grid-template-columns: 1fr; /* Single column */
+            }
+            .mobile-total-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+            .mobile-footer .download-btn {
+                width: auto;
+                padding: 12px 24px;
             }
         }
 
         /* --- PDF RECEIPT TEMPLATE (Hidden in UI) --- */
-        /* Explicitly force black text & white background for printing */
         #receipt-container {
             display: none;
             padding: 30px;
@@ -282,68 +425,75 @@
             color: black !important;
             width: 350px;
         }
-        #receipt-container * {
-            color: black !important;
-            border-color: black !important;
-        }
-
-        .receipt-header {
-            text-align: center;
-            border-bottom: 2px dashed black;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .receipt-header h2 { margin: 0 0 5px 0; font-size: 22px; font-weight: bold; }
-        .receipt-header p { margin: 0; font-size: 13px; }
-
+        #receipt-container * { color: black !important; border-color: black !important; }
+        .receipt-header { text-align: center; border-bottom: 2px dashed black; padding-bottom: 15px; margin-bottom: 15px; }
+        .receipt-header h2 { margin: 0 0 5px 0; font-size: 24px; font-weight: bold; }
+        .receipt-header p { margin: 0; font-size: 14px; }
         .receipt-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .receipt-table th { text-align: left; border-bottom: 1px dashed black; padding: 8px 0; font-size: 13px; }
-        .receipt-table td { padding: 6px 0; font-size: 13px; }
+        .receipt-table th { text-align: left; border-bottom: 1px dashed black; padding: 8px 0; font-size: 14px; }
+        .receipt-table td { padding: 6px 0; font-size: 14px; }
         .td-right { text-align: right; }
         .td-center { text-align: center; }
-
-        .receipt-total {
-            border-top: 2px dashed black;
-            padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        
-        .receipt-footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            border-top: 1px dashed black;
-            padding-top: 15px;
-        }
+        .receipt-total { border-top: 2px dashed black; padding-top: 15px; display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 12px; border-top: 1px dashed black; padding-top: 15px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>KRISHNA HOTEL</h1>
-        <p>Quick Billing System</p>
-    </header>
+    <div class="app-container">
+        <!-- Left: Main Menu -->
+        <div class="main-content">
+            <header>
+                <div class="logo-icon">🪷</div>
+                <div>
+                    <h1>KRISHNA HOTEL</h1>
+                    <p>Modern Point of Sale</p>
+                </div>
+            </header>
 
-    <div class="container">
-        <div class="menu-grid" id="menu-container">
-            <!-- Menu items will be injected here by JavaScript -->
+            <!-- Search Bar -->
+            <input type="text" id="search-input" class="search-box" placeholder="🔍 Search menu items (e.g., Tea, Dosha)..." onkeyup="filterMenu()">
+
+            <div class="menu-grid" id="menu-container">
+                <!-- Menu items injected here via JS -->
+            </div>
+        </div>
+
+        <!-- Right: Desktop Sidebar Cart -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                🛒 Current Order
+            </div>
+            <div class="cart-items" id="cart-items">
+                <div class="empty-cart">No items selected</div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="total-row">
+                    <span class="total-label">Total</span>
+                    <span class="total-amount" id="display-total">₹0.00</span>
+                </div>
+                <div class="action-row">
+                    <button class="reset-btn" onclick="resetCart()" title="Clear Order">
+                        🗑️
+                    </button>
+                    <button class="download-btn" onclick="generatePDF()">
+                        🖨️ Print Bill
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Sticky Bottom Bar -->
-    <div class="checkout-bar">
-        <div class="checkout-content">
-            <div class="total-wrapper">
-                <span class="total-label">Grand Total</span>
-                <span class="total-amount" id="display-total">₹0.00</span>
-            </div>
+    <!-- Mobile Sticky Footer -->
+    <div class="mobile-footer">
+        <div class="mobile-total-wrapper">
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Grand Total</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: var(--accent);" id="mobile-display-total">₹0.00</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="reset-btn" onclick="resetCart()" style="border: none; background: rgba(239, 68, 68, 0.15);">🗑️</button>
             <button class="download-btn" onclick="generatePDF()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Print & Download Bill
+                Print Bill
             </button>
         </div>
     </div>
@@ -364,9 +514,7 @@
                     <th class="td-right">Total</th>
                 </tr>
             </thead>
-            <tbody id="receipt-body">
-                <!-- Receipt items injected here -->
-            </tbody>
+            <tbody id="receipt-body"></tbody>
         </table>
         <div class="receipt-total">
             <span>TOTAL:</span>
@@ -380,48 +528,57 @@
 
     <script>
         // ==========================================
-        // 1. ADD OR EDIT MENU ITEMS HERE
+        // MENU DATA (Added Icons for better UI)
         // ==========================================
         const menuItems = [
-            { id: 'porota', name: 'Porota', price: 14 },
-            { id: 'tea', name: 'Tea', price: 14 },
-            { id: 'appam', name: 'Appam', price: 12 },
-            { id: 'dosha', name: 'Dosha', price: 12 },
-            { id: 'muttacurry', name: 'Mutta Curry', price: 35 },
-            { id: 'kadala', name: 'Kadala Curry', price: 35 },
-            { id: 'beef', name: 'Beef (Half)', price: 110 },
-            { id: 'fish', name: 'Fish Curry', price: 60 }
+            { id: 'porota', name: 'Porota', price: 14, icon: '🫓' },
+            { id: 'tea', name: 'Tea', price: 14, icon: '☕' },
+            { id: 'appam', name: 'Appam', price: 12, icon: '🥞' },
+            { id: 'dosha', name: 'Dosha', price: 12, icon: '🌮' },
+            { id: 'muttacurry', name: 'Mutta Curry', price: 35, icon: '🥚' },
+            { id: 'kadala', name: 'Kadala Curry', price: 35, icon: '🧆' },
+            { id: 'beef', name: 'Beef (Half)', price: 110, icon: '🥩' },
+            { id: 'fish', name: 'Fish Curry', price: 60, icon: '🐟' }
         ];
 
-        // Store the current quantities
         const orderQuantities = {};
 
-        // Initialize the app
         function initApp() {
             const container = document.getElementById('menu-container');
             
             menuItems.forEach(item => {
-                orderQuantities[item.id] = 0; // default qty is 0
+                orderQuantities[item.id] = 0; 
 
-                // Create the HTML for each item
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'menu-item';
+                
+                // Note: onfocus="this.select()" and onclick="this.select()" 
+                // makes typing large numbers instantly easy without backspacing!
                 itemDiv.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">₹${item.price.toFixed(2)}</div>
+                    <div class="item-header">
+                        <div class="item-emoji">${item.icon}</div>
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">₹${item.price.toFixed(2)}</div>
+                        </div>
                     </div>
                     <div class="quantity-controls">
-                        <button class="qty-btn" onclick="updateQty('${item.id}', -1)" aria-label="Decrease quantity">-</button>
-                        <input type="number" id="qty-${item.id}" value="0" min="0" onchange="manualInput('${item.id}')" aria-label="Quantity">
-                        <button class="qty-btn" onclick="updateQty('${item.id}', 1)" aria-label="Increase quantity">+</button>
+                        <button class="qty-btn" onclick="updateQty('${item.id}', -1)">-</button>
+                        <input type="number" 
+                               id="qty-${item.id}" 
+                               class="qty-input" 
+                               value="0" min="0" 
+                               onchange="manualInput('${item.id}')" 
+                               onclick="this.select()" 
+                               onfocus="this.select()" 
+                               aria-label="Quantity for ${item.name}">
+                        <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
                     </div>
                 `;
                 container.appendChild(itemDiv);
             });
         }
 
-        // Handle plus/minus buttons
         function updateQty(id, change) {
             const input = document.getElementById(`qty-${id}`);
             let newQty = parseInt(input.value) + change;
@@ -431,36 +588,51 @@
             calculateTotal();
         }
 
-        // Handle manual typing in the input box
         function manualInput(id) {
             const input = document.getElementById(`qty-${id}`);
             let val = parseInt(input.value);
-            if (isNaN(val) || val < 0) {
-                val = 0;
-                input.value = 0;
-            }
+            if (isNaN(val) || val < 0) val = 0;
+            input.value = val;
             orderQuantities[id] = val;
             calculateTotal();
         }
 
-        // Calculate and display the grand total on the screen
         function calculateTotal() {
             let total = 0;
+            const cartContainer = document.getElementById('cart-items');
+            cartContainer.innerHTML = ''; // Clear cart sidebar
+            let hasItems = false;
+
             menuItems.forEach(item => {
-                total += orderQuantities[item.id] * item.price;
+                const qty = orderQuantities[item.id];
+                if (qty > 0) {
+                    hasItems = true;
+                    const itemTotal = qty * item.price;
+                    total += itemTotal;
+                    
+                    // Update Sidebar Cart UI
+                    cartContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-name">
+                                ${item.name} <span class="cart-item-qty">x${qty}</span>
+                            </div>
+                            <div class="cart-item-total">₹${itemTotal.toFixed(2)}</div>
+                        </div>
+                    `;
+                }
             });
+
+            if (!hasItems) {
+                cartContainer.innerHTML = '<div class="empty-cart">No items selected</div>';
+            }
             
-            // Format number with commas (e.g., 1,000.00)
-            const formattedTotal = total.toLocaleString('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-            
+            const formattedTotal = total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('display-total').innerText = `₹${formattedTotal}`;
+            document.getElementById('mobile-display-total').innerText = `₹${formattedTotal}`;
+            
             return total;
         }
 
-        // Generate the PDF Bill
         function generatePDF() {
             const totalAmount = calculateTotal();
             
@@ -469,17 +641,14 @@
                 return;
             }
 
-            // 1. Populate the hidden receipt template
             const receiptBody = document.getElementById('receipt-body');
-            receiptBody.innerHTML = ''; // Clear old data
+            receiptBody.innerHTML = ''; 
             
-            // Set current date/time
             const now = new Date();
             const dateString = now.toLocaleDateString('en-IN');
             const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('receipt-date').innerText = `${dateString} | ${timeString}`;
 
-            // Add selected items to the receipt table
             menuItems.forEach(item => {
                 const qty = orderQuantities[item.id];
                 if (qty > 0) {
@@ -498,28 +667,67 @@
             const formattedTotalAmount = totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             document.getElementById('receipt-grand-total').innerText = `₹${formattedTotalAmount}`;
 
-            // 2. Unhide the receipt temporarily so html2pdf can read it
             const receiptElement = document.getElementById('receipt-container');
             receiptElement.style.display = 'block';
 
-            // 3. Configure PDF settings
             const opt = {
                 margin:       0.2,
                 filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, backgroundColor: '#ffffff' },
-                jsPDF:        { unit: 'in', format: [3.5, 6], orientation: 'portrait' } // Custom size similar to thermal receipt
+                jsPDF:        { unit: 'in', format: [3.5, 6], orientation: 'portrait' } 
             };
 
-            // 4. Generate and download PDF, then hide the receipt again
             html2pdf().set(opt).from(receiptElement).save().then(() => {
                 receiptElement.style.display = 'none';
             });
         }
 
-        // Run the initialization when the page loads
-        window.onload = initApp;
+        // Search Filter Logic
+        function filterMenu() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const items = document.querySelectorAll('.menu-item');
+            
+            items.forEach(item => {
+                const name = item.querySelector('.item-name').innerText.toLowerCase();
+                if (name.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
 
+        // Reset Cart Logic
+        function resetCart() {
+            // Check if cart is already empty
+            let isEmpty = true;
+            for (let id in orderQuantities) {
+                if (orderQuantities[id] > 0) isEmpty = false;
+            }
+            if (isEmpty) return; 
+
+            // Ask for confirmation
+            if (confirm("Are you sure you want to clear the current bill?")) {
+                // Reset all quantities to 0
+                menuItems.forEach(item => {
+                    orderQuantities[item.id] = 0;
+                    document.getElementById(`qty-${item.id}`).value = 0;
+                });
+                
+                // Recalculate to clear the sidebar UI
+                calculateTotal();
+                
+                // Optional: Clear the search box too
+                const searchBox = document.getElementById('search-input');
+                if (searchBox.value !== '') {
+                    searchBox.value = '';
+                    filterMenu();
+                }
+            }
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
