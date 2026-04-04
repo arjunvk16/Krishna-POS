@@ -416,26 +416,65 @@
             }
         }
 
-        /* --- PDF RECEIPT TEMPLATE (Hidden in UI) --- */
+        /* --- FIX: PDF RECEIPT TEMPLATE ALIGNMENT --- */
         #receipt-container {
             display: none;
-            padding: 30px;
+            padding: 15px; /* Reduced to provide more usable width */
             font-family: 'Courier New', Courier, monospace;
             background: white !important;
             color: black !important;
-            width: 350px;
+            width: 280px; /* Constrained explicit width */
+            box-sizing: border-box; /* Crucial to prevent padding extending width */
+            margin: 0 auto;
         }
-        #receipt-container * { color: black !important; border-color: black !important; }
-        .receipt-header { text-align: center; border-bottom: 2px dashed black; padding-bottom: 15px; margin-bottom: 15px; }
-        .receipt-header h2 { margin: 0 0 5px 0; font-size: 24px; font-weight: bold; }
-        .receipt-header p { margin: 0; font-size: 14px; }
-        .receipt-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .receipt-table th { text-align: left; border-bottom: 1px dashed black; padding: 8px 0; font-size: 14px; }
-        .receipt-table td { padding: 6px 0; font-size: 14px; }
-        .td-right { text-align: right; }
-        .td-center { text-align: center; }
-        .receipt-total { border-top: 2px dashed black; padding-top: 15px; display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; }
-        .receipt-footer { text-align: center; margin-top: 20px; font-size: 12px; border-top: 1px dashed black; padding-top: 15px; }
+        
+        #receipt-container * { 
+            color: black !important; 
+            border-color: black !important; 
+            box-sizing: border-box; 
+        }
+
+        .receipt-header { 
+            text-align: center; 
+            border-bottom: 2px dashed black; 
+            padding-bottom: 12px; 
+            margin-bottom: 12px; 
+        }
+        .receipt-header h2 { margin: 0 0 5px 0; font-size: 20px; font-weight: bold; }
+        .receipt-header p { margin: 0; font-size: 12px; }
+        
+        .receipt-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 12px; 
+            table-layout: fixed; /* Strictly enforces column widths */
+        }
+        
+        /* Explicit Column Widths to stop overflow */
+        .receipt-table th:nth-child(1), .receipt-table td:nth-child(1) { width: 45%; }
+        .receipt-table th:nth-child(2), .receipt-table td:nth-child(2) { width: 15%; text-align: center;}
+        .receipt-table th:nth-child(3), .receipt-table td:nth-child(3) { width: 20%; text-align: right;}
+        .receipt-table th:nth-child(4), .receipt-table td:nth-child(4) { width: 20%; text-align: right;}
+
+        .receipt-table th { text-align: left; border-bottom: 1px dashed black; padding: 6px 0; font-size: 12px; }
+        .receipt-table td { padding: 6px 0; font-size: 12px; word-wrap: break-word; }
+        
+        .receipt-total { 
+            border-top: 2px dashed black; 
+            padding-top: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            font-weight: bold; 
+            font-size: 16px; 
+        }
+        
+        .receipt-footer { 
+            text-align: center; 
+            margin-top: 20px; 
+            font-size: 11px; 
+            border-top: 1px dashed black; 
+            padding-top: 12px; 
+        }
     </style>
 </head>
 <body>
@@ -509,9 +548,9 @@
             <thead>
                 <tr>
                     <th>Item</th>
-                    <th class="td-center">Qty</th>
-                    <th class="td-right">Price</th>
-                    <th class="td-right">Total</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody id="receipt-body"></tbody>
@@ -656,9 +695,9 @@
                     receiptBody.innerHTML += `
                         <tr>
                             <td>${item.name}</td>
-                            <td class="td-center">${qty}</td>
-                            <td class="td-right">${item.price}</td>
-                            <td class="td-right">${itemTotal.toFixed(2)}</td>
+                            <td>${qty}</td>
+                            <td>${item.price}</td>
+                            <td>${itemTotal.toFixed(2)}</td>
                         </tr>
                     `;
                 }
@@ -670,12 +709,14 @@
             const receiptElement = document.getElementById('receipt-container');
             receiptElement.style.display = 'block';
 
+            // FIX: Adjust margin to 0.1 and format height to 11 to ensure width isn't squeezed 
+            // and long bills don't get cut off at the bottom
             const opt = {
-                margin:       0.2,
+                margin:       0.1,
                 filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, backgroundColor: '#ffffff' },
-                jsPDF:        { unit: 'in', format: [3.5, 6], orientation: 'portrait' } 
+                jsPDF:        { unit: 'in', format: [3.5, 11], orientation: 'portrait' } 
             };
 
             html2pdf().set(opt).from(receiptElement).save().then(() => {
