@@ -425,7 +425,7 @@
             color: black !important;
             width: 280px;
             box-sizing: border-box;
-            margin: 0 auto;
+            /* Removed margin to prevent rendering offsets */
         }
         
         #receipt-container * { 
@@ -731,18 +731,27 @@
             const receiptElement = document.getElementById('receipt-container');
             receiptElement.style.display = 'block';
 
-            // PDF options
+            // PDF options - CRITICAL BUG FIXES FOR BLANK PAGES ADDED HERE
             const opt = {
                 margin:       0.1,
                 filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, backgroundColor: '#ffffff' },
+                html2canvas:  { 
+                    scale: 2, 
+                    backgroundColor: '#ffffff',
+                    scrollY: 0, // FIX: Ignores scrolling distance to prevent blank renders
+                    scrollX: 0
+                },
                 jsPDF:        { unit: 'in', format: [3.5, 11], orientation: 'portrait' } 
             };
 
-            html2pdf().set(opt).from(receiptElement).save().then(() => {
-                receiptElement.style.display = 'none';
-            });
+            // FIX: Added setTimeout. Gives browser 150ms to physically draw the 
+            // "receiptElement" onto the screen before capturing it.
+            setTimeout(() => {
+                html2pdf().set(opt).from(receiptElement).save().then(() => {
+                    receiptElement.style.display = 'none';
+                });
+            }, 150);
         }
 
         // Search Filter Logic
