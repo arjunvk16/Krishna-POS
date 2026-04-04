@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Krishna Hotel - Modern POS</title>
-    <!-- html2pdf library for downloading the bill -->
+    <!-- Bill download madalu html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         /* Premium Dark Theme Variables */
@@ -39,7 +39,7 @@
             overflow-x: hidden;
         }
 
-        /* App Layout */
+        /* App Vinyasa */
         .app-container {
             display: flex;
             flex: 1;
@@ -50,7 +50,7 @@
             gap: 24px;
         }
 
-        /* Left Side: Main Menu */
+        /* Yedabhaga: Main Menu */
         .main-content {
             flex: 1;
             display: flex;
@@ -92,7 +92,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 20px;
-            padding-bottom: 100px; /* Space for mobile footer */
+            padding-bottom: 100px; /* Mobile footer gaagi sthala */
         }
 
         /* Modern Menu Item Card */
@@ -148,7 +148,7 @@
             font-size: 1.2rem;
         }
 
-        /* Improved Quantity Controls */
+        /* Pramana Controls */
         .quantity-controls {
             display: flex;
             align-items: center;
@@ -185,7 +185,7 @@
             transform: scale(0.9);
         }
 
-        /* Made input explicitly editable and prominent */
+        /* Input explicitly editable */
         .qty-input {
             width: 70px;
             height: 40px;
@@ -217,7 +217,7 @@
             margin: 0; 
         }
 
-        /* Right Side: Order Summary (Sidebar for Desktop) */
+        /* Balabhaga: Order Summary (Desktop gaagi Sidebar) */
         .sidebar {
             width: 380px;
             background: var(--surface);
@@ -331,7 +331,7 @@
             box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
         }
 
-        /* NEW: Search Bar & Reset Button Styles */
+        /* Search Bar mattu Reset Button Styles */
         .search-box {
             width: 100%;
             padding: 16px 20px;
@@ -375,7 +375,7 @@
             transform: translateY(-2px);
         }
 
-        /* Mobile Sticky Footer (Hidden on Desktop) */
+        /* Mobile Sticky Footer */
         .mobile-footer {
             display: none;
             position: fixed;
@@ -396,7 +396,7 @@
                 padding: 15px;
             }
             .sidebar {
-                display: none; /* Hide full sidebar on mobile */
+                display: none; /* Mobile nalli sidebar hide madi */
             }
             .mobile-footer {
                 display: flex;
@@ -416,15 +416,15 @@
             }
         }
 
-        /* --- FIX: PDF RECEIPT TEMPLATE ALIGNMENT --- */
+        /* FIX: PDF RECEIPT TEMPLATE ALIGNMENT */
         #receipt-container {
             display: none;
-            padding: 15px; /* Reduced to provide more usable width */
+            padding: 15px;
             font-family: 'Courier New', Courier, monospace;
             background: white !important;
             color: black !important;
-            width: 280px; /* Constrained explicit width */
-            box-sizing: border-box; /* Crucial to prevent padding extending width */
+            width: 280px;
+            box-sizing: border-box;
             margin: 0 auto;
         }
         
@@ -447,10 +447,10 @@
             width: 100%; 
             border-collapse: collapse; 
             margin-bottom: 12px; 
-            table-layout: fixed; /* Strictly enforces column widths */
+            table-layout: fixed; 
         }
         
-        /* Explicit Column Widths to stop overflow */
+        /* Column Widths */
         .receipt-table th:nth-child(1), .receipt-table td:nth-child(1) { width: 45%; }
         .receipt-table th:nth-child(2), .receipt-table td:nth-child(2) { width: 15%; text-align: center;}
         .receipt-table th:nth-child(3), .receipt-table td:nth-child(3) { width: 20%; text-align: right;}
@@ -480,43 +480,43 @@
 <body>
 
     <div class="app-container">
-        <!-- Left: Main Menu -->
+        <!-- Yedabhaga: Main Menu -->
         <div class="main-content">
             <header>
                 <div class="logo-icon">🪷</div>
                 <div>
                     <h1>KRISHNA HOTEL</h1>
-                    <p>Modern Point of Sale</p>
+                    <p>Aadhunika Point of Sale</p>
                 </div>
             </header>
 
             <!-- Search Bar -->
-            <input type="text" id="search-input" class="search-box" placeholder="🔍 Search menu items (e.g., Tea, Dosha)..." onkeyup="filterMenu()">
+            <input type="text" id="search-input" class="search-box" placeholder="🔍 Menu item huduki (Udaharanegagi, Tea, Dosha)..." onkeyup="filterMenu()">
 
             <div class="menu-grid" id="menu-container">
-                <!-- Menu items injected here via JS -->
+                <!-- JS moolaka menu itemgalannu illi serisalaguttade -->
             </div>
         </div>
 
-        <!-- Right: Desktop Sidebar Cart -->
+        <!-- Balabhaga: Desktop Sidebar Cart -->
         <div class="sidebar">
             <div class="sidebar-header">
-                🛒 Current Order
+                🛒 Prastuta Order
             </div>
             <div class="cart-items" id="cart-items">
-                <div class="empty-cart">No items selected</div>
+                <div class="empty-cart">Yavude item aayke madilla</div>
             </div>
             <div class="sidebar-footer">
                 <div class="total-row">
-                    <span class="total-label">Total</span>
+                    <span class="total-label">Ottu</span>
                     <span class="total-amount" id="display-total">₹0.00</span>
                 </div>
                 <div class="action-row">
-                    <button class="reset-btn" onclick="resetCart()" title="Clear Order">
+                    <button class="reset-btn" onclick="resetCart()" title="Order Clear Maadi">
                         🗑️
                     </button>
                     <button class="download-btn" onclick="generatePDF()">
-                        🖨️ Print Bill
+                        🖨️ Bill Print Maadi
                     </button>
                 </div>
             </div>
@@ -526,58 +526,71 @@
     <!-- Mobile Sticky Footer -->
     <div class="mobile-footer">
         <div class="mobile-total-wrapper">
-            <span style="font-size: 0.9rem; color: var(--text-muted);">Grand Total</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Ottu Motta</span>
             <span style="font-size: 1.8rem; font-weight: 800; color: var(--accent);" id="mobile-display-total">₹0.00</span>
         </div>
         <div style="display: flex; gap: 8px;">
             <button class="reset-btn" onclick="resetCart()" style="border: none; background: rgba(239, 68, 68, 0.15);">🗑️</button>
             <button class="download-btn" onclick="generatePDF()">
-                Print Bill
+                Bill Print Maadi
             </button>
         </div>
     </div>
 
-    <!-- Hidden Bill Template for PDF Generation -->
+    <!-- PDF Generate madalu Hidden Bill Template -->
     <div id="receipt-container">
         <div class="receipt-header">
             <h2>KRISHNA HOTEL</h2>
-            <p>Authentic Taste</p>
+            <p>Nijaavaada Ruchi</p>
             <p id="receipt-date" style="margin-top: 10px;"></p>
         </div>
         <table class="receipt-table">
             <thead>
                 <tr>
                     <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
+                    <th>Pramana</th>
+                    <th>Bele</th>
+                    <th>Ottu</th>
                 </tr>
             </thead>
             <tbody id="receipt-body"></tbody>
         </table>
         <div class="receipt-total">
-            <span>TOTAL:</span>
+            <span>OTTU:</span>
             <span id="receipt-grand-total">₹0.00</span>
         </div>
         <div class="receipt-footer">
-            <p>Thank you for dining with us!</p>
-            <p>Visit Again</p>
+            <p>Namma jote oota madiddakke dhanyavadagalu!</p>
+            <p>Matte Banni</p>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // MENU DATA (Added Icons for better UI)
+        // MENU DATA (Olley UI gaagi Icons add madalagide)
         // ==========================================
         const menuItems = [
             { id: 'porota', name: 'Porota', price: 14, icon: '🫓' },
-            { id: 'tea', name: 'Tea', price: 14, icon: '☕' },
+            { id: 'tea', name: 'Tea', price: 14, icon: '🍵' },
+            { id: 'coffee', name: 'Coffee', price: 20, icon: '☕' },
+            { id: 'milk', name: 'Milk', price: 18, icon: '🥛' },
             { id: 'appam', name: 'Appam', price: 12, icon: '🥞' },
+            { id: 'idiyappam', name: 'Idiyappam', price: 12, icon: '🥏' },
+            { id: 'puttu', name: 'Puttu', price: 15, icon: '🥥' },
             { id: 'dosha', name: 'Dosha', price: 12, icon: '🌮' },
+            { id: 'idili', name: 'Idili', price: 12, icon: '🥟' },
+            { id: 'puri', name: 'Puri', price: 12, icon: '🍘' },
             { id: 'muttacurry', name: 'Mutta Curry', price: 35, icon: '🥚' },
             { id: 'kadala', name: 'Kadala Curry', price: 35, icon: '🧆' },
-            { id: 'beef', name: 'Beef (Half)', price: 110, icon: '🥩' },
-            { id: 'fish', name: 'Fish Curry', price: 60, icon: '🐟' }
+            { id: 'kizhangu_curry', name: 'Kizhangu Curry', price: 25, icon: '🥔' },
+            { id: 'beef_fry_half', name: 'Beef Fry Half', price: 110, icon: '🥩' },
+            { id: 'beef_fry_full', name: 'Beef Fry Full', price: 160, icon: '🥩' },
+            { id: 'beef_curry_full', name: 'Beef Curry Full', price: 160, icon: '🍛' },
+            { id: 'fish', name: 'Fish Curry', price: 60, icon: '🐟' },
+            { id: 'fish_fry', name: 'Fish Fry', price: 40, icon: '🍤' },
+            { id: 'biriyani', name: 'Biriyani', price: 100, icon: '🥘' },
+            { id: 'biriyani_full', name: 'Biriyani Full', price: 150, icon: '🥘' },
+            { id: 'meals', name: 'Meals', price: 70, icon: '🍱' }
         ];
 
         const orderQuantities = {};
@@ -591,8 +604,7 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'menu-item';
                 
-                // Note: onfocus="this.select()" and onclick="this.select()" 
-                // makes typing large numbers instantly easy without backspacing!
+                // onfocus="this.select()" use madiddare dodda numbers type madalu sulabha
                 itemDiv.innerHTML = `
                     <div class="item-header">
                         <div class="item-emoji">${item.icon}</div>
@@ -610,7 +622,7 @@
                                onchange="manualInput('${item.id}')" 
                                onclick="this.select()" 
                                onfocus="this.select()" 
-                               aria-label="Quantity for ${item.name}">
+                               aria-label="${item.name} gaagi pramana">
                         <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
                     </div>
                 `;
@@ -639,7 +651,7 @@
         function calculateTotal() {
             let total = 0;
             const cartContainer = document.getElementById('cart-items');
-            cartContainer.innerHTML = ''; // Clear cart sidebar
+            cartContainer.innerHTML = ''; // Sidebar clear madi
             let hasItems = false;
 
             menuItems.forEach(item => {
@@ -649,7 +661,7 @@
                     const itemTotal = qty * item.price;
                     total += itemTotal;
                     
-                    // Update Sidebar Cart UI
+                    // Sidebar Cart UI update madi
                     cartContainer.innerHTML += `
                         <div class="cart-item">
                             <div class="cart-item-name">
@@ -662,7 +674,7 @@
             });
 
             if (!hasItems) {
-                cartContainer.innerHTML = '<div class="empty-cart">No items selected</div>';
+                cartContainer.innerHTML = '<div class="empty-cart">Yavude item aayke madilla</div>';
             }
             
             const formattedTotal = total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -676,7 +688,7 @@
             const totalAmount = calculateTotal();
             
             if (totalAmount === 0) {
-                alert("Please add at least one item to generate a bill.");
+                alert("Bill generate madalu kanishta ondu item adaru add madi.");
                 return;
             }
 
@@ -709,8 +721,7 @@
             const receiptElement = document.getElementById('receipt-container');
             receiptElement.style.display = 'block';
 
-            // FIX: Adjust margin to 0.1 and format height to 11 to ensure width isn't squeezed 
-            // and long bills don't get cut off at the bottom
+            // PDF options
             const opt = {
                 margin:       0.1,
                 filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
@@ -741,25 +752,25 @@
 
         // Reset Cart Logic
         function resetCart() {
-            // Check if cart is already empty
+            // Cart khali idere check madi
             let isEmpty = true;
             for (let id in orderQuantities) {
                 if (orderQuantities[id] > 0) isEmpty = false;
             }
             if (isEmpty) return; 
 
-            // Ask for confirmation
-            if (confirm("Are you sure you want to clear the current bill?")) {
-                // Reset all quantities to 0
+            // Confirmation keli
+            if (confirm("Neevu prastuta bill annu clear madalu khachitavagi bayasuttira?")) {
+                // Ella quantities 0 ge reset madi
                 menuItems.forEach(item => {
                     orderQuantities[item.id] = 0;
                     document.getElementById(`qty-${item.id}`).value = 0;
                 });
                 
-                // Recalculate to clear the sidebar UI
+                // Sidebar UI clear madalu recalculate madi
                 calculateTotal();
                 
-                // Optional: Clear the search box too
+                // Search box annu clear madi
                 const searchBox = document.getElementById('search-input');
                 if (searchBox.value !== '') {
                     searchBox.value = '';
