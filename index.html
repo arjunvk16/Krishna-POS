@@ -6,6 +6,8 @@
     <title>Krishna Hotel - Modern POS</title>
     <!-- Bill download madalu html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- QR Code generation library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         /* Premium Dark Theme Variables (Banna mattu vinyasa) */
         :root {
@@ -475,6 +477,35 @@
             border-top: 1px dashed black; 
             padding-top: 12px; 
         }
+
+        /* Signature Section Styles */
+        .receipt-signature {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .sign-line {
+            border-top: 1px solid black;
+            padding-top: 5px;
+            width: 80px;
+            text-align: center;
+        }
+
+        /* QR Code Styles */
+        .receipt-qr-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .receipt-qr-container p {
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
@@ -559,9 +590,22 @@
             <span>TOTAL:</span>
             <span id="receipt-grand-total">₹0.00</span>
         </div>
+        
         <div class="receipt-footer">
             <p>Thank you for dining with us!</p>
             <p>Visit Again</p>
+        </div>
+
+        <!-- Signature Section -->
+        <div class="receipt-signature">
+            <div class="sign-line">Manager</div>
+            <div class="sign-line">Signature</div>
+        </div>
+
+        <!-- QR Code Section -->
+        <div class="receipt-qr-container">
+            <p>Scan to Rate Us</p>
+            <div id="qrcode"></div>
         </div>
     </div>
 
@@ -637,6 +681,16 @@
                     </div>
                 `;
                 container.appendChild(itemDiv);
+            });
+
+            // Generate the QR Code dynamically on load
+            new QRCode(document.getElementById("qrcode"), {
+                text: "https://share.google/O1yjKRZvJvH0f0bZV",
+                width: 70,
+                height: 70,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.L
             });
         }
 
