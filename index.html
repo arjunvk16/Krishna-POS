@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krishna Hotel - Billing System</title>
+    <!-- html2pdf library for downloading the bill -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Modern Dark Theme Variables */
+        :root {
+            --primary: #ea580c; /* Deep orange/saffron */
+            --primary-hover: #c2410c;
+            --bg-color: #121212; /* Black theme background */
+            --card-bg: #1e1e1e; /* Dark card background */
+            --text-main: #f8fafc; /* Light text for dark mode */
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.3);
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 140px; /* Space for the sticky bottom bar */
+        }
+
+        /* Header Section */
+        header {
+            background: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Main Container & Grid */
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        /* Menu Item Card */
+        .menu-item {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: #475569;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .item-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Modern Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 4px;
+        }
+
+        .qty-btn {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            width: 44px; /* Larger for mobile touch */
+            height: 44px; /* Larger for mobile touch */
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            /* Prevent double tap zoom on mobile */
+            touch-action: manipulation; 
+        }
+
+        .qty-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .qty-btn:active {
+            transform: scale(0.95);
+        }
+
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+            font-size: 1.2rem; /* 16px+ prevents iOS auto-zoom */
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-main);
+            outline: none;
+            -moz-appearance: textfield;
+        }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+
+        /* Sticky Bottom Checkout Bar */
+        .checkout-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(30, 30, 30, 0.95); /* Dark blur */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+            padding: 15px 20px;
+            z-index: 100;
+        }
+
+        .checkout-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .total-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .total-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .download-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: var(--shadow-md);
+            touch-action: manipulation;
+        }
+
+        .download-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Adjustments for Mobile */
+        @media (max-width: 600px) {
+            .menu-grid {
+                grid-template-columns: 1fr; /* Single column on phones */
+            }
+            .checkout-content {
+                flex-direction: column;
+                text-align: stretch;
+                gap: 12px;
+            }
+            .total-wrapper {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 10px;
+            }
+            .total-amount {
+                font-size: 1.6rem;
+            }
+            .download-btn {
+                width: 100%;
+                justify-content: center;
+                padding: 14px;
+            }
+            header {
+                padding: 15px;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* --- PDF RECEIPT TEMPLATE (Hidden in UI) --- */
+        /* Explicitly force black text & white background for printing */
+        #receipt-container {
+            display: none;
+            padding: 30px;
+            font-family: 'Courier New', Courier, monospace;
+            background: white !important;
+            color: black !important;
+            width: 350px;
+        }
+        #receipt-container * {
+            color: black !important;
+            border-color: black !important;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed black;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-header h2 { margin: 0 0 5px 0; font-size: 22px; font-weight: bold; }
+        .receipt-header p { margin: 0; font-size: 13px; }
+
+        .receipt-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .receipt-table th { text-align: left; border-bottom: 1px dashed black; padding: 8px 0; font-size: 13px; }
+        .receipt-table td { padding: 6px 0; font-size: 13px; }
+        .td-right { text-align: right; }
+        .td-center { text-align: center; }
+
+        .receipt-total {
+            border-top: 2px dashed black;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .receipt-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            border-top: 1px dashed black;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>KRISHNA HOTEL</h1>
+        <p>Quick Billing System</p>
+    </header>
+
+    <div class="container">
+        <div class="menu-grid" id="menu-container">
+            <!-- Menu items will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Bar -->
+    <div class="checkout-bar">
+        <div class="checkout-content">
+            <div class="total-wrapper">
+                <span class="total-label">Grand Total</span>
+                <span class="total-amount" id="display-total">₹0.00</span>
+            </div>
+            <button class="download-btn" onclick="generatePDF()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Print & Download Bill
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden Bill Template for PDF Generation -->
+    <div id="receipt-container">
+        <div class="receipt-header">
+            <h2>KRISHNA HOTEL</h2>
+            <p>Authentic Taste</p>
+            <p id="receipt-date" style="margin-top: 10px;"></p>
+        </div>
+        <table class="receipt-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th class="td-center">Qty</th>
+                    <th class="td-right">Price</th>
+                    <th class="td-right">Total</th>
+                </tr>
+            </thead>
+            <tbody id="receipt-body">
+                <!-- Receipt items injected here -->
+            </tbody>
+        </table>
+        <div class="receipt-total">
+            <span>TOTAL:</span>
+            <span id="receipt-grand-total">₹0.00</span>
+        </div>
+        <div class="receipt-footer">
+            <p>Thank you for dining with us!</p>
+            <p>Visit Again</p>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ADD OR EDIT MENU ITEMS HERE
+        // ==========================================
+        const menuItems = [
+            { id: 'porota', name: 'Porota', price: 14 },
+            { id: 'tea', name: 'Tea', price: 14 },
+            { id: 'appam', name: 'Appam', price: 12 },
+            { id: 'dosha', name: 'Dosha', price: 12 },
+            { id: 'muttacurry', name: 'Mutta Curry', price: 35 },
+            { id: 'kadala', name: 'Kadala Curry', price: 35 },
+            { id: 'beef', name: 'Beef (Half)', price: 110 },
+            { id: 'fish', name: 'Fish Curry', price: 60 }
+        ];
+
+        // Store the current quantities
+        const orderQuantities = {};
+
+        // Initialize the app
+        function initApp() {
+            const container = document.getElementById('menu-container');
+            
+            menuItems.forEach(item => {
+                orderQuantities[item.id] = 0; // default qty is 0
+
+                // Create the HTML for each item
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'menu-item';
+                itemDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">₹${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty('${item.id}', -1)" aria-label="Decrease quantity">-</button>
+                        <input type="number" id="qty-${item.id}" value="0" min="0" onchange="manualInput('${item.id}')" aria-label="Quantity">
+                        <button class="qty-btn" onclick="updateQty('${item.id}', 1)" aria-label="Increase quantity">+</button>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Handle plus/minus buttons
+        function updateQty(id, change) {
+            const input = document.getElementById(`qty-${id}`);
+            let newQty = parseInt(input.value) + change;
+            if (newQty < 0) newQty = 0;
+            input.value = newQty;
+            orderQuantities[id] = newQty;
+            calculateTotal();
+        }
+
+        // Handle manual typing in the input box
+        function manualInput(id) {
+            const input = document.getElementById(`qty-${id}`);
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 0) {
+                val = 0;
+                input.value = 0;
+            }
+            orderQuantities[id] = val;
+            calculateTotal();
+        }
+
+        // Calculate and display the grand total on the screen
+        function calculateTotal() {
+            let total = 0;
+            menuItems.forEach(item => {
+                total += orderQuantities[item.id] * item.price;
+            });
+            
+            // Format number with commas (e.g., 1,000.00)
+            const formattedTotal = total.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            document.getElementById('display-total').innerText = `₹${formattedTotal}`;
+            return total;
+        }
+
+        // Generate the PDF Bill
+        function generatePDF() {
+            const totalAmount = calculateTotal();
+            
+            if (totalAmount === 0) {
+                alert("Please add at least one item to generate a bill.");
+                return;
+            }
+
+            // 1. Populate the hidden receipt template
+            const receiptBody = document.getElementById('receipt-body');
+            receiptBody.innerHTML = ''; // Clear old data
+            
+            // Set current date/time
+            const now = new Date();
+            const dateString = now.toLocaleDateString('en-IN');
+            const timeString = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('receipt-date').innerText = `${dateString} | ${timeString}`;
+
+            // Add selected items to the receipt table
+            menuItems.forEach(item => {
+                const qty = orderQuantities[item.id];
+                if (qty > 0) {
+                    const itemTotal = qty * item.price;
+                    receiptBody.innerHTML += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td class="td-center">${qty}</td>
+                            <td class="td-right">${item.price}</td>
+                            <td class="td-right">${itemTotal.toFixed(2)}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            const formattedTotalAmount = totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('receipt-grand-total').innerText = `₹${formattedTotalAmount}`;
+
+            // 2. Unhide the receipt temporarily so html2pdf can read it
+            const receiptElement = document.getElementById('receipt-container');
+            receiptElement.style.display = 'block';
+
+            // 3. Configure PDF settings
+            const opt = {
+                margin:       0.2,
+                filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, backgroundColor: '#ffffff' },
+                jsPDF:        { unit: 'in', format: [3.5, 6], orientation: 'portrait' } // Custom size similar to thermal receipt
+            };
+
+            // 4. Generate and download PDF, then hide the receipt again
+            html2pdf().set(opt).from(receiptElement).save().then(() => {
+                receiptElement.style.display = 'none';
+            });
+        }
+
+        // Run the initialization when the page loads
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
