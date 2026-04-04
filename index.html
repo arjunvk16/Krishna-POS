@@ -7,17 +7,17 @@
     <!-- Bill download madalu html2pdf library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        /* Premium Dark Theme Variables */
+        /* Premium Dark Theme Variables (Banna mattu vinyasa) */
         :root {
-            --primary: #f97316; /* Vibrant Saffron/Orange */
+            --primary: #f97316;
             --primary-hover: #ea580c;
-            --bg-color: #0f172a; /* Deep Slate Background */
-            --surface: #1e293b; /* Card Background */
+            --bg-color: #0f172a;
+            --surface: #1e293b;
             --surface-hover: #334155;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: #334155;
-            --accent: #10b981; /* Green for success/totals */
+            --accent: #10b981;
             --radius-lg: 16px;
             --radius-md: 12px;
             --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.15);
@@ -486,12 +486,12 @@
                 <div class="logo-icon">🪷</div>
                 <div>
                     <h1>KRISHNA HOTEL</h1>
-                    <p>Aadhunika Point of Sale</p>
+                    <p>Modern Point of Sale</p>
                 </div>
             </header>
 
             <!-- Search Bar -->
-            <input type="text" id="search-input" class="search-box" placeholder="🔍 Menu item huduki (Udaharanegagi, Tea, Dosha)..." onkeyup="filterMenu()">
+            <input type="text" id="search-input" class="search-box" placeholder="🔍 Search menu items (e.g., Tea, Dosha)..." onkeyup="filterMenu()">
 
             <div class="menu-grid" id="menu-container">
                 <!-- JS moolaka menu itemgalannu illi serisalaguttade -->
@@ -501,22 +501,22 @@
         <!-- Balabhaga: Desktop Sidebar Cart -->
         <div class="sidebar">
             <div class="sidebar-header">
-                🛒 Prastuta Order
+                🛒 Current Order
             </div>
             <div class="cart-items" id="cart-items">
-                <div class="empty-cart">Yavude item aayke madilla</div>
+                <div class="empty-cart">No items selected</div>
             </div>
             <div class="sidebar-footer">
                 <div class="total-row">
-                    <span class="total-label">Ottu</span>
+                    <span class="total-label">Total</span>
                     <span class="total-amount" id="display-total">₹0.00</span>
                 </div>
                 <div class="action-row">
-                    <button class="reset-btn" onclick="resetCart()" title="Order Clear Maadi">
+                    <button class="reset-btn" onclick="resetCart()" title="Clear Order">
                         🗑️
                     </button>
                     <button class="download-btn" onclick="generatePDF()">
-                        🖨️ Bill Print Maadi
+                        🖨️ Print Bill
                     </button>
                 </div>
             </div>
@@ -526,13 +526,13 @@
     <!-- Mobile Sticky Footer -->
     <div class="mobile-footer">
         <div class="mobile-total-wrapper">
-            <span style="font-size: 0.9rem; color: var(--text-muted);">Ottu Motta</span>
+            <span style="font-size: 0.9rem; color: var(--text-muted);">Grand Total</span>
             <span style="font-size: 1.8rem; font-weight: 800; color: var(--accent);" id="mobile-display-total">₹0.00</span>
         </div>
         <div style="display: flex; gap: 8px;">
             <button class="reset-btn" onclick="resetCart()" style="border: none; background: rgba(239, 68, 68, 0.15);">🗑️</button>
             <button class="download-btn" onclick="generatePDF()">
-                Bill Print Maadi
+                Print Bill
             </button>
         </div>
     </div>
@@ -541,27 +541,27 @@
     <div id="receipt-container">
         <div class="receipt-header">
             <h2>KRISHNA HOTEL</h2>
-            <p>Nijaavaada Ruchi</p>
+            <p>Authentic Taste</p>
             <p id="receipt-date" style="margin-top: 10px;"></p>
         </div>
         <table class="receipt-table">
             <thead>
                 <tr>
                     <th>Item</th>
-                    <th>Pramana</th>
-                    <th>Bele</th>
-                    <th>Ottu</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody id="receipt-body"></tbody>
         </table>
         <div class="receipt-total">
-            <span>OTTU:</span>
+            <span>TOTAL:</span>
             <span id="receipt-grand-total">₹0.00</span>
         </div>
         <div class="receipt-footer">
-            <p>Namma jote oota madiddakke dhanyavadagalu!</p>
-            <p>Matte Banni</p>
+            <p>Thank you for dining with us!</p>
+            <p>Visit Again</p>
         </div>
     </div>
 
@@ -580,9 +580,18 @@
             { id: 'dosha', name: 'Dosha', price: 12, icon: '🌮' },
             { id: 'idili', name: 'Idili', price: 12, icon: '🥟' },
             { id: 'puri', name: 'Puri', price: 12, icon: '🍘' },
+            { id: 'vada', name: 'Vada', price: 14, icon: '🍩' },
+            { id: 'parippu_vada', name: 'Parippu Vada', price: 14, icon: '🧆' },
+            { id: 'bonda', name: 'Bonda', price: 14, icon: '🍘' },
+            { id: 'boli', name: 'Boli', price: 14, icon: '🥞' },
+            { id: 'ulli_vada', name: 'Ulli Vada', price: 14, icon: '🧅' },
+            { id: 'pattiri', name: 'Pattiri', price: 14, icon: '🫓' },
+            { id: 'porota_roast', name: 'Porota Roast', price: 15, icon: '🌯' },
             { id: 'muttacurry', name: 'Mutta Curry', price: 35, icon: '🥚' },
             { id: 'kadala', name: 'Kadala Curry', price: 35, icon: '🧆' },
             { id: 'kizhangu_curry', name: 'Kizhangu Curry', price: 25, icon: '🥔' },
+            { id: 'egg_kozhi', name: 'Egg Kozhi', price: 15, icon: '🍗' },
+            { id: 'egg_kada', name: 'Egg Kada', price: 20, icon: '🥚' },
             { id: 'beef_fry_half', name: 'Beef Fry Half', price: 110, icon: '🥩' },
             { id: 'beef_fry_full', name: 'Beef Fry Full', price: 160, icon: '🥩' },
             { id: 'beef_curry_half', name: 'Beef Curry Half', price: 110, icon: '🍛' },
@@ -623,7 +632,7 @@
                                onchange="manualInput('${item.id}')" 
                                onclick="this.select()" 
                                onfocus="this.select()" 
-                               aria-label="${item.name} gaagi pramana">
+                               aria-label="Quantity for ${item.name}">
                         <button class="qty-btn" onclick="updateQty('${item.id}', 1)">+</button>
                     </div>
                 `;
@@ -675,7 +684,7 @@
             });
 
             if (!hasItems) {
-                cartContainer.innerHTML = '<div class="empty-cart">Yavude item aayke madilla</div>';
+                cartContainer.innerHTML = '<div class="empty-cart">No items selected</div>';
             }
             
             const formattedTotal = total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -689,7 +698,7 @@
             const totalAmount = calculateTotal();
             
             if (totalAmount === 0) {
-                alert("Bill generate madalu kanishta ondu item adaru add madi.");
+                alert("Please add at least one item to generate a bill.");
                 return;
             }
 
@@ -761,7 +770,7 @@
             if (isEmpty) return; 
 
             // Confirmation keli
-            if (confirm("Neevu prastuta bill annu clear madalu khachitavagi bayasuttira?")) {
+            if (confirm("Are you sure you want to clear the current bill?")) {
                 // Ella quantities 0 ge reset madi
                 menuItems.forEach(item => {
                     orderQuantities[item.id] = 0;
