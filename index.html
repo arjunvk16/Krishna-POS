@@ -682,16 +682,6 @@
                 `;
                 container.appendChild(itemDiv);
             });
-
-            // Generate the QR Code dynamically on load
-            new QRCode(document.getElementById("qrcode"), {
-                text: "https://share.google/O1yjKRZvJvH0f0bZV",
-                width: 70,
-                height: 70,
-                colorDark : "#000000",
-                colorLight : "#ffffff",
-                correctLevel : QRCode.CorrectLevel.L
-            });
         }
 
         function updateQty(id, change) {
@@ -783,9 +773,23 @@
             document.getElementById('receipt-grand-total').innerText = `₹${formattedTotalAmount}`;
 
             const receiptElement = document.getElementById('receipt-container');
-            receiptElement.style.display = 'block';
+            receiptElement.style.display = 'block'; // Make it temporarily visible for PDF rendering
 
-            // PDF options - CRITICAL BUG FIXES FOR BLANK PAGES ADDED HERE
+            // FIX: Generate the QR Code ONLY after making the container visible
+            // Hidden containers cause the QR library to create an empty 0x0 image.
+            const qrContainer = document.getElementById("qrcode");
+            if (qrContainer.innerHTML === "") {
+                new QRCode(qrContainer, {
+                    text: "https://share.google/O1yjKRZvJvH0f0bZV",
+                    width: 70,
+                    height: 70,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            }
+
+            // PDF options 
             const opt = {
                 margin:       0.1,
                 filename:     `KrishnaHotel_Bill_${Date.now()}.pdf`,
@@ -793,19 +797,18 @@
                 html2canvas:  { 
                     scale: 2, 
                     backgroundColor: '#ffffff',
-                    scrollY: 0, // FIX: Ignores scrolling distance to prevent blank renders
+                    scrollY: 0, 
                     scrollX: 0
                 },
                 jsPDF:        { unit: 'in', format: [3.5, 11], orientation: 'portrait' } 
             };
 
-            // FIX: Added setTimeout. Gives browser 150ms to physically draw the 
-            // "receiptElement" onto the screen before capturing it.
+            // FIX: Increased setTimeout to 200ms to guarantee QR Code is drawn on canvas before printing
             setTimeout(() => {
                 html2pdf().set(opt).from(receiptElement).save().then(() => {
-                    receiptElement.style.display = 'none';
+                    receiptElement.style.display = 'none'; // Hide it again after printing
                 });
-            }, 150);
+            }, 200);
         }
 
         // Search Filter Logic
